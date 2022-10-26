@@ -1,5 +1,6 @@
 package com.example.android.myapplication.transport;
 
+import android.content.Context;
 import android.security.keystore.KeyProperties;
 import android.util.Log;
 
@@ -23,39 +24,27 @@ import javax.net.ssl.TrustManagerFactory;
 
 public class TransportServer {
 
-    private ServerSocket serverSocket;
-    private Socket socket;
+    private SSLServerSocket serverSocket;
+    private SSLSocket socket;
 
-    public TransportServer(int port) {
+    public TransportServer(Context context, int port) {
         try {
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            KeyStore keystore = KeyStore.getInstance("AndroidKeyStore");
-            keystore.load(null);
-            tmf.init(keystore);
-
-            Log.e("hojiang", "trustManager: " + tmf.getTrustManagers()[0].toString());
-
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            kmf.init(keystore, null);
-
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-
 //            serverSocket = (SSLServerSocket) sslContext.getServerSocketFactory().createServerSocket(port);
 
-            serverSocket = ServerSocketFactory.getDefault().createServerSocket(port);
+            serverSocket = SSLServerSocketKeystoreFactory.getServerSocketWithCert(context, port, SSLServerSocketKeystoreFactory.ServerSecureType.TLSv1_2);
+//            serverSocket.setEnabledCipherSuites(serverSocket.getSupportedCipherSuites());
 
-            new Thread(() -> {
-                try {
-                    socket = serverSocket.accept();
-                    Log.e("hojiang", "server start accept: " + socket.getPort());
-                } catch (IOException e) {
-                    Log.e("hojiang", "server accept exception: " + e);
-                    e.printStackTrace();
-                }
-            }).start();
+            try {
+                socket = (SSLSocket) serverSocket.accept();
+                Log.e("hojiang", "server start accept: " + socket.getLocalPort());
+                socket.startHandshake();
+            } catch (IOException e) {
+                Log.e("hojiang", "server accept exception: " + e);
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             Log.e("hojiang", "TransportServer exception: " + e);
+            e.printStackTrace();
         }
     }
 
