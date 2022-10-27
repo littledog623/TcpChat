@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        KeyManager.generateCert("littledog")
+        KeyManager.generateCert("littledog")
 //
 //        findViewById<Button>(R.id.send_button).setOnClickListener { view ->
 //            Thread() {

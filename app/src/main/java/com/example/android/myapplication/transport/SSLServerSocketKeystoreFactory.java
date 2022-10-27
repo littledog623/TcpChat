@@ -86,14 +86,10 @@ public class SSLServerSocketKeystoreFactory {
 //        ks.setKeyEntry("littledog", com.example.android.myapplication.transport.KeyManager.keyPair.getPrivate(), null, com.example.android.myapplication.transport.KeyManager.getCertChain("littledog"));
         // get user password and file input stream
 
-        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        char[] password = new char[]{'1', '2', '3', '4', '5', '6', '7', '8'};
-
-        try (InputStream fis = context.getAssets().open("littledog.keystore")) {
-            ks.load(fis, password);
-        }
+        KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
+        ks.load(null);
         tmm=tm(ks);
-        kmm=km(ks, password);
+        kmm=km(ks, null);
         SSLContext ctx = SSLContext.getInstance(type.getType());
         ctx.init(kmm, tmm, null);
         SSLServerSocketFactory socketFactory = (SSLServerSocketFactory) ctx.getServerSocketFactory();
@@ -135,9 +131,9 @@ public class SSLServerSocketKeystoreFactory {
      * @author gpotter2
      */
     private static X509KeyManager[] km(KeyStore keystore, char[] password) throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
-        KeyManagerFactory keyMgrFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        KeyManagerFactory keyMgrFactory = KeyManagerFactory.getInstance("X509");
         keyMgrFactory.init(keystore, password);
-        KeyManager keyManagers[] = keyMgrFactory.getKeyManagers();
+        KeyManager[] keyManagers = keyMgrFactory.getKeyManagers();
         for (int i = 0; i < keyManagers.length; i++) {
             if (keyManagers[i] instanceof X509KeyManager) {
                 X509KeyManager[] kr = new X509KeyManager[1];

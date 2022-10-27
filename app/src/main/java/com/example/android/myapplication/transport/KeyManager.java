@@ -38,7 +38,7 @@ public class KeyManager {
         final KeyGenParameterSpec.Builder keyGenParameterSpecBuilder =
                 new KeyGenParameterSpec.Builder(
                         keyAlias, KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY)
-//                        .setDigests(KeyProperties.DIGEST_SHA384)
+                        .setDigests(KeyProperties.DIGEST_NONE)
                         .setKeySize(384)
                         .setCertificateSerialNumber(new BigInteger(128, new SecureRandom()))
                         .setCertificateSubject(new X500Principal("CN=" + "littledog"));

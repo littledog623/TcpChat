@@ -107,12 +107,8 @@ public class SSLSocketKeystoreFactory {
     public static SSLSocket getSocketWithCert(Context context, InetAddress ip, int port, SecureType type) throws IOException,
             KeyManagementException, NoSuchAlgorithmException, CertificateException, KeyStoreException, SocketException{
         X509TrustManager[] tmm;
-        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-
-        // get user password and file input stream
-        try (InputStream fis = context.getAssets().open("littledog.keystore")) {
-            ks.load(fis, null);
-        }
+        KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
+        ks.load(null);
         tmm=tm(ks);
         SSLContext ctx = SSLContext.getInstance(type.getType());
         ctx.init(null, tmm, null);
@@ -133,9 +129,9 @@ public class SSLSocketKeystoreFactory {
      * @author gpotter2
      */
     private static X509TrustManager[] tm(KeyStore keystore) throws NoSuchAlgorithmException, KeyStoreException {
-        TrustManagerFactory trustMgrFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        TrustManagerFactory trustMgrFactory = TrustManagerFactory.getInstance("X509");
         trustMgrFactory.init(keystore);
-        TrustManager trustManagers[] = trustMgrFactory.getTrustManagers();
+        TrustManager[] trustManagers = trustMgrFactory.getTrustManagers();
         for (int i = 0; i < trustManagers.length; i++) {
             if (trustManagers[i] instanceof X509TrustManager) {
                 X509TrustManager[] tr = new X509TrustManager[1];
