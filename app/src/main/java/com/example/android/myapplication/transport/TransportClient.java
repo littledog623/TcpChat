@@ -24,7 +24,7 @@ public class TransportClient {
         try {
             clientSocket = SSLSocketKeystoreFactory.getSocketWithCert(context, hostname, port, SSLSocketKeystoreFactory.SecureType.TLSv1_2);
 //            clientSocket.setEnabledCipherSuites(clientSocket.getSupportedCipherSuites());
-            Log.e("hojiang", "client connected: " + clientSocket.isConnected() + ", " + clientSocket.getLocalPort());
+            Log.e("hojiang", "client connected: " + clientSocket.isConnected() + ", " + clientSocket.getLocalAddress().getHostAddress() + ", " + clientSocket.getLocalPort());
             ((SSLSocket) clientSocket).addHandshakeCompletedListener(new HandshakeCompletedListener() {
                 @Override
                 public void handshakeCompleted(HandshakeCompletedEvent event) {

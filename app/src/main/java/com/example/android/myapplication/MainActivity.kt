@@ -51,14 +51,14 @@ class MainActivity : AppCompatActivity() {
 
 //        var client = ChatClient()
 
-        findViewById<Button>(R.id.start_server_button).setOnClickListener { view ->
-            CompletableFuture.runAsync { transportServer = TransportServer(this, 33333) }
-        }
+//        findViewById<Button>(R.id.start_server_button).setOnClickListener { view ->
+//            CompletableFuture.runAsync { transportServer = TransportServer(this, 33333) }
+//        }
 
         findViewById<Button>(R.id.connect_button).setOnClickListener { view ->
             CompletableFuture.runAsync {
-                val transportClient = TransportClient(this, "localhost", 33333)
-                transportClient.sendMessage("asdfasdfas")
+                val transportClient = TransportClient(this, "10.106.152.65", 5000)
+                transportClient.sendMessage("asdfasdfas<EOF>")
             }
         }
 
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        KeyManager.generateCert("littledog")
+//        KeyManager.generateCert("littledog")
 //
 //        findViewById<Button>(R.id.send_button).setOnClickListener { view ->
 //            Thread() {

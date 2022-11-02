@@ -1,7 +1,9 @@
 package com.example.android.myapplication.transport;
 
 import android.content.Context;
+import android.util.Base64;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,6 +17,9 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.Observable;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
@@ -109,6 +114,15 @@ public class SSLSocketKeystoreFactory {
         X509TrustManager[] tmm;
         KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
         ks.load(null);
+
+        String certBase64 = "MIIBWzCB4qADAgECAgkAhH5r1p2Dbn8wCgYIKoZIzj0EAwMwFTETMBEGA1UEAxMKbGl0dGxlZG9nMTAeFw0yMjEwMjcxMTU1MzVaFw0yNzEwMjcxMTU1MzZaMBUxEzARBgNVBAMTCmxpdHRsZWRvZzEwdjAQBgcqhkjOPQIBBgUrgQQAIgNiAAQeZmurozOlroCW5McT6z/EWjh4MsT6zV8NABBmEkyJ4SaoxPkcgNvPBEUktOKIzGuM7iRtkpZuvT5a85uaKutRP7XRaBaGmiN4pj4vgMrQ5aIBOwyXJ9zJd5uxoUs3CCYwCgYIKoZIzj0EAwMDaAAwZQIxANSH3idD4oVcA9uYLcmIcs2XetJrwcm9z6VBigkyOqJ6RhrK8jC+A0ufCh1nGs0U+wIwQ1RFXVJFfqVeDlss8CxgcN/dcTtQbqphg8zjqag2DtocuExR004RXdyN+eDMxHxB";
+        final X509Certificate partnerCert =
+                (X509Certificate)
+                        CertificateFactory.getInstance("X509")
+                                .generateCertificate(
+                                        new ByteArrayInputStream(
+                                                Base64.decode(certBase64, Base64.DEFAULT)));
+        ks.setCertificateEntry("littledog1", partnerCert);
         tmm=tm(ks);
         SSLContext ctx = SSLContext.getInstance(type.getType());
         ctx.init(null, tmm, null);
